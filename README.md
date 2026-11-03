@@ -8,14 +8,14 @@ A full-stack web application that allows users to record their dreams and receiv
 - Get AI interpretations of your dreams
 - View all past dreams and their interpretations
 - Delete dreams
-- SQLite database for persistent storage
+- SQLite for local development and PostgreSQL for hosted deployments
 - Vanilla JavaScript frontend
 - Express backend with RESTful API
 
 ## Tech Stack
 
 - **Backend**: Node.js, Express
-- **Database**: SQLite
+- **Database**: SQLite locally; PostgreSQL when `DATABASE_URL` is set
 - **Frontend**: HTML, CSS, Vanilla JavaScript
 - **AI**: Google Gemini API
 
@@ -56,6 +56,8 @@ Edit `.env` and add your Gemini API key:
 GEMINI_API_KEY=your_api_key_here
 GEMINI_MODEL=gemini-2.5-flash
 PORT=3001
+# Optional: use PostgreSQL instead of local SQLite
+# DATABASE_URL=postgresql://user:password@host/database?sslmode=require
 ```
 
 Get your API key from [Google AI Studio](https://aistudio.google.com/apikey).
@@ -83,13 +85,13 @@ The app will be available at `http://localhost:3001`
 
 ## Deploy to Render
 
-1. Push the project to a GitHub repository.
-2. In the [Render Dashboard](https://dashboard.render.com/), choose **New → Blueprint** and connect the repository.
-3. Render reads `render.yaml` and creates the web service and its persistent disk. The Blueprint uses a Starter web service because SQLite needs persistent storage.
-4. When prompted, enter `GEMINI_API_KEY`. You can optionally set `GEMINI_MODEL`; it defaults to `gemini-2.5-flash`.
-5. Deploy the Blueprint. Render builds with `npm ci` and starts the app with `npm start`.
+1. Create a PostgreSQL database with a provider that offers a free tier, such as Neon, and copy its connection URL. Use the provider's SSL-enabled URL.
+2. Push this project to GitHub.
+3. In the [Render Dashboard](https://dashboard.render.com/), choose **New → Blueprint** and connect the repository.
+4. When prompted, enter `GEMINI_API_KEY` and the PostgreSQL connection URL as `DATABASE_URL`. You can optionally set `GEMINI_MODEL`; it defaults to `gemini-2.5-flash`.
+5. Deploy the Blueprint. It creates a Free web service, builds with `npm ci`, and starts with `npm start`.
 
-The database is stored at `/var/data/dreams.db` on the attached 1 GB persistent disk, so dream entries survive redeployments. The disk starts with a new database; existing local `dreams.db` data is not copied to Render. Keep the disk mounted at `/var/data` if you change the database path.
+The app automatically creates its PostgreSQL table at startup. Local runs use SQLite unless `DATABASE_URL` is set. The hosted database starts empty; local SQLite data is not copied over. Render's Free web service may spin down while idle, but the external database stores dreams separately.
 
 ## Usage
 

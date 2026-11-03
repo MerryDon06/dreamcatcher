@@ -12,4 +12,12 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: dream-catcher-db
+          property: connectionString
+
+databases:
+  - name: dream-catcher-db
+    plan: free
+    databaseName: dream_catcher
+    user: dream_catcher_user

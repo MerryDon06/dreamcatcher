@@ -85,13 +85,13 @@ The app will be available at `http://localhost:3001`
 
 ## Deploy to Render
 
-1. Create a PostgreSQL database with a provider that offers a free tier, such as Neon, and copy its connection URL. Use the provider's SSL-enabled URL.
-2. Push this project to GitHub.
-3. In the [Render Dashboard](https://dashboard.render.com/), choose **New → Blueprint** and connect the repository.
-4. When prompted, enter `GEMINI_API_KEY` and the PostgreSQL connection URL as `DATABASE_URL`. You can optionally set `GEMINI_MODEL`; it defaults to `gemini-2.5-flash`.
-5. Deploy the Blueprint. It creates a Free web service, builds with `npm ci`, and starts with `npm start`.
+1. Push this project to GitHub.
+2. In the [Render Dashboard](https://dashboard.render.com/), choose **New → Blueprint** and connect the repository.
+3. Render reads `render.yaml` and creates a Free web service and a Free PostgreSQL database, wiring the database connection automatically.
+4. Enter `GEMINI_API_KEY` when prompted. You can optionally set `GEMINI_MODEL`; it defaults to `gemini-2.5-flash`.
+5. Deploy the Blueprint. It builds with `npm ci` and starts with `npm start`.
 
-The app automatically creates its PostgreSQL table at startup. Local runs use SQLite unless `DATABASE_URL` is set. The hosted database starts empty; local SQLite data is not copied over. Render's Free web service may spin down while idle, but the external database stores dreams separately.
+The app automatically creates its PostgreSQL table at startup. Local runs use SQLite unless `DATABASE_URL` is set. The hosted database starts empty; local SQLite data is not copied over. Render Free web services spin down while idle, and Free PostgreSQL databases expire 30 days after creation. Export or migrate your data before the database expires; choose a paid database for long-term persistence.
 
 ## Usage
 

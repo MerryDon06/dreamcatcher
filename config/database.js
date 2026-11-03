@@ -1,5 +1,4 @@
 import pg from 'pg';
-import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -43,6 +42,7 @@ export async function getDatabase() {
         }
       };
     } else {
+      const { default: sqlite3 } = await import('sqlite3');
       db = await open({
         filename: dbPath,
         driver: sqlite3.Database

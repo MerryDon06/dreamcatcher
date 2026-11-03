@@ -1,6 +1,6 @@
-# Dream Journal App
+# Dream Catcher
 
-A full-stack web application that allows users to record their dreams and receive AI-powered interpretations using Claude.
+A full-stack web application that allows users to record their dreams and receive AI-powered interpretations using Gemini.
 
 ## Features
 
@@ -15,9 +15,9 @@ A full-stack web application that allows users to record their dreams and receiv
 ## Tech Stack
 
 - **Backend**: Node.js, Express
-- **Database**: SQLite (better-sqlite3)
+- **Database**: SQLite
 - **Frontend**: HTML, CSS, Vanilla JavaScript
-- **AI**: Anthropic Claude API
+- **AI**: Google Gemini API
 
 ## Project Structure
 
@@ -44,20 +44,21 @@ npm install
 
 ### 2. Set Up Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory from the example:
 
 ```bash
-cp .env.example .env
+copy .env.example .env
 ```
 
-Edit `.env` and add your Anthropic API key:
+Edit `.env` and add your Gemini API key:
 
 ```
-ANTHROPIC_API_KEY=your_api_key_here
-PORT=3000
+GEMINI_API_KEY=your_api_key_here
+GEMINI_MODEL=gemini-2.5-flash
+PORT=3001
 ```
 
-Get your API key from: https://console.anthropic.com/
+Get your API key from [Google AI Studio](https://aistudio.google.com/apikey).
 
 ### 3. Run the Application
 
@@ -71,7 +72,7 @@ Production mode:
 npm start
 ```
 
-The app will be available at `http://localhost:3000`
+The app will be available at `http://localhost:3001`
 
 ## API Endpoints
 
@@ -80,38 +81,15 @@ The app will be available at `http://localhost:3000`
 - `POST /api/dreams` - Create a new dream (requires `dream_text` in body)
 - `DELETE /api/dreams/:id` - Delete a dream
 
-## Deployment to Render
+## Deploy to Render
 
-### 1. Prepare Your Repository
+1. Push the project to a GitHub repository.
+2. In the [Render Dashboard](https://dashboard.render.com/), choose **New → Blueprint** and connect the repository.
+3. Render reads `render.yaml` and creates the web service and its persistent disk. The Blueprint uses a Starter web service because SQLite needs persistent storage.
+4. When prompted, enter `GEMINI_API_KEY`. You can optionally set `GEMINI_MODEL`; it defaults to `gemini-2.5-flash`.
+5. Deploy the Blueprint. Render builds with `npm ci` and starts the app with `npm start`.
 
-Make sure your code is in a Git repository (GitHub, GitLab, etc.)
-
-### 2. Create a New Web Service on Render
-
-1. Go to https://render.com and sign in
-2. Click "New +" and select "Web Service"
-3. Connect your repository
-4. Configure the service:
-   - **Name**: dream-journal (or your choice)
-   - **Environment**: Node
-   - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-
-### 3. Add Environment Variables
-
-In the Render dashboard, add:
-- `ANTHROPIC_API_KEY`: Your Anthropic API key
-
-### 4. Deploy
-
-Click "Create Web Service" and Render will deploy your app automatically.
-
-### 5. Database Persistence
-
-Note: The SQLite database file will be stored in Render's ephemeral filesystem. For production, consider:
-- Using Render's persistent disk feature
-- Migrating to PostgreSQL for better persistence
-- Backing up data regularly
+The database is stored at `/var/data/dreams.db` on the attached 1 GB persistent disk, so dream entries survive redeployments. The disk starts with a new database; existing local `dreams.db` data is not copied to Render. Keep the disk mounted at `/var/data` if you change the database path.
 
 ## Usage
 

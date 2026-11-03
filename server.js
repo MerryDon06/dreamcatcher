@@ -33,4 +33,5 @@ initDatabase().then(() => {
   });
 }).catch(error => {
   console.error('Failed to initialize database:', error);
+  process.exitCode = 1;
 });
